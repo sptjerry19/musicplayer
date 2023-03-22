@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Music App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js"></script>
+    <script src="https://kit.fontawesome.com/48b47b215e.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Music App</h1>
+    </header>
+    <div id="container">
+      <main>
+        <div id="music-list">
+
+        </div>
+        <div id="now-playing">
+          <h2>Now Playing</h2>
+          <p class="name-song"></p>
+          <img class="imageAudio" src="" alt="">
+          <audio class="audio-music">
+            <source src="" type="audio/mpeg">
+          </audio>
+          <input type="range" min="0" max="100" value="0" step="0.5" class="timeline-range">
+          
+          <div class="controls-btn">
+            <button class="rotate-music">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button class="back-btn">
+              <i class="fa-solid fa-backward"></i>
+            </button>
+            <button class="play-btn" onclick="playMusic()">
+              <i class="fa-solid fa-play"></i>
+            </button>
+            <button class="stop-btn" onclick="pauseMusic()">
+              <i class="fa-solid fa-pause"></i>
+            </button>
+            <button class="next-btn">
+              <i class="fa-solid fa-forward"></i>
+            </button>
+            <button class="shuffle-btn">
+              <i class="fa-solid fa-shuffle"></i>
+            </button>
+          </div>
+        </div>
+        <!-- <button class="stop-btn">dung lai</button> -->
+      </main>
+    </div>
+      <footer>
+        <p>Copyright © 2023 Music App</p>
+      </footer>
+
+    <script>
+      const $ = document.querySelector.bind(document);
+      const $$ = document.querySelectorAll.bind(document);
+
+      const listMusics = $('#music-list');
+      const nameSong = $('.name-song');
+      const imageSong = $('.imageAudio');
+      const audioMusic = $('.audio-music');
+
+      const progress = $('.timeline-range');
+
+      const stopBtn = $(".stop-btn");
+      const playBtn = $(".play-btn");
+      const nextBtn = $(".next-btn");
+      const controlsBtn = $(".controls-btn");
+
+      function pauseMusic() {
+        imageSong.style.animationPlayState = "paused";
+        controlsBtn.classList.remove("is-playing");
+        audioMusic.pause();
+      };
+
+      function playMusic() {
+        imageSong.style.animationPlayState = "running";
+        controlsBtn.classList.add("is-playing");
+        audioMusic.play();
+      }
+
+      audioMusic.ontimeupdate = function() {
+        if (audioMusic.duration) {
+          const progressPercent = audioMusic.currentTime * 100 / audioMusic.duration;
+          progress.value = progressPercent;
+        }
+      }
+
+      progress.onchange = function(e) {
+        const seekTime = (e.target.value / 100) * audioMusic.duration;
+        audioMusic.currentTime = seekTime;
+      }
+      
+      const app = {
+        currentIndex : 1,
+        songs: [
+          {
+            name: 'Sau Này Liệu Chúng Ta',
+            singer: 'Lofi-chill',
+            path: './audio/songs/y2mate.com - 31072  Sau Này Liệu Chúng Ta  Sợ Lắm 2 ft Hẹn Yêu  Mix Freak D Mashup Lofi Sad Cực Chill  P2.mp3',
+            image: './audio/image/106095835_p0_master1200.jpg'
+          },
+          {
+            name: 'CHẠY NGAY ĐI',
+            singer: 'Sơn Tùng MTP',
+            path: './audio/songs/y2mate.com - CHẠY NGAY ĐI ONIONN REMIX RUN NOW ONIONN REMIX  SƠN TÙNG MTP  Official Music Video.mp3',
+            image: './audio/image/5853c947842662279bac87cc4866da1c.jpg'
+          },
+          {
+            name: 'LẠC TRÔI',
+            singer: 'Sơn Tùng MTP',
+            path: './audio/songs/y2mate.com - LẠC TRÔI  OFFICIAL MUSIC VIDEO  SƠN TÙNG MTP.mp3',
+            image: './audio/image/84095572_p0_master1200.jpg'
+          },
+          {
+            name: 'NƠI NÀY CÓ ANH',
+            singer: 'Sơn Tùng MTP',
+            path: './audio/songs/y2mate.com - NƠI NÀY CÓ ANH  OFFICIAL MUSIC VIDEO  SƠN TÙNG MTP.mp3',
+            image: './audio/image/D7PnQ2AUEAAGczJ.jfif'
+          },
+          {
+            name: 'THERES NO ONE AT ALL',
+            singer: 'Sơn Tùng MTP',
+            path: './audio/songs/y2mate.com - SƠN TÙNG MTP  THERES NO ONE AT ALL ANOTHER VERSION  OFFICIAL MUSIC VIDEO.mp3',
+            image: './audio/image/dceecf2daed1ad9fbac9f3500bf2b5f6.jpg'
+          },
+        ],
+
+        renderSong: function() {
+          const htmls = this.songs.map(function(song) {
+            return `
+              <li class="tab-music">
+                <div class="info-song">
+                  <img src="${song.image}" alt="">
+                  <div class="description-music">
+                    <h3>${song.name}</h3>
+                    <p>${song.singer}</p>
+                  </div>                
+                </div>
+                <div>
+                  <i class="fa-solid fa-play" style="font-size: 30px" onclick="playSongInList()"></i>
+                </div>
+              </li>
+            `
+          });
+          listMusics.innerHTML = htmls.join('');
+        },
+
+        currentSong: function() {
+          return this.songs[this.currentIndex];
+        },
+
+        loadCurrentMusic: function() {
+          console.log(imageSong, this.currentSong().image);
+          nameSong.innerHTML = this.currentSong().name;
+          imageSong.src = this.currentSong().image;
+          audioMusic.src = this.currentSong().path;
+        },
+
+        start: function() {
+          imageSong.style.animationPlayState = "paused"
+          this.renderSong()
+
+          this.loadCurrentMusic()
+        },
+
+        nextSong: function() {
+          this.songs.forEach(song => {
+            //
+          });
+        },
+      }
+
+      app.start();
+
+    </script>
+    <source src="./audio/image/dceecf2daed1ad9fbac9f3500bf2b5f6.jpg">
+  </body>
+</html>
