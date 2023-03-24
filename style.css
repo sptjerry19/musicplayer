@@ -2,11 +2,13 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-image: url("./audio/image/1028709.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
   }
   
   header {
-    background-color: #333;
-    color: white;
+    color: rgba(248, 89, 89, 0.631);
     text-align: center;
     padding: 20px;
   }
@@ -17,7 +19,7 @@ body {
 
   #container {
     max-width: 70%;
-    margin: 40px auto;
+    margin: 132px auto;
   }
   
   main {
@@ -33,6 +35,28 @@ body {
     max-height: 330px;
   }
 
+  #music-list::-webkit-scrollbar {
+    width: 7px;
+    background-color: #f5f5f545;
+  }
+
+  #music-list::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #f5f5f545;
+    border-radius: 10px;
+  }
+  
+  #music-list::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-image: -webkit-gradient(linear,
+                       left bottom,
+                       left top,
+                       color-stop(0.44, rgb(122, 198, 217)),
+                       color-stop(0.72, rgb(73, 162, 189)),
+                       color-stop(0.86, rgb(28, 110, 148)));
+  }
+  
+
   .info-song {
     display: flex;
     align-items: center;
@@ -43,14 +67,25 @@ body {
     align-items: center;
     justify-content: space-between;
     height: 60px;
+    color: #000000;
+  }
+
+  li.tab-music:hover {
+    background-color: #e0fcff76;
+    cursor: pointer;
   }
 
   li.tab-music img {
+    border: 2px solid #696969;
     width: 60px;
     min-width: 60px;
     height: 60px;
-    padding: 10px;
-    border-radius: 25px;
+    margin: 10px;
+    border-radius: 15px;
+  }
+
+  .tab-music.active {
+    background-color: #e0fcff76;
   }
 
   .description-music {
@@ -86,6 +121,7 @@ body {
   }
 
   .imageAudio {
+    border: 2px solid #000;
     border-radius: 50%;
     top: 50%;
     left: 50%;
@@ -101,7 +137,6 @@ body {
   }
   
   footer {
-    background-color: #333;
     color: white;
     text-align: center;
     padding: 10px;
@@ -113,9 +148,38 @@ body {
     }
   }
 
-  input.timeline-range {
+  .timeline-range {
+    -webkit-appearance: none;
+    appearance: none;
     width: 100%;
-    margin-top: 10px;
+    height: 5px;
+    background-color: #eee;
+    border-radius: 2px;
+    outline: none;
+    overflow: hidden;
+    margin: 10px 0;
+    cursor: pointer;
+  }
+  
+  .timeline-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 8px;
+    height: 8px;
+    background-color: #3edcff;
+    box-shadow: -400px 0 0 400px #3edcff;
+    border-radius: 50%;
+    border: none;
+    margin-top: 0;
+  }
+  
+  .timeline-range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background-color: #3edcff;
+    border-radius: 50%;
+    border: none;
+    margin-top: -8.5px;
   }
 
   .controls-btn {
@@ -128,5 +192,76 @@ body {
   }
 
   .controls-btn button {
+    text-align: center;
     font-size: 25px;
+    border: none;
+    background-color: #ffffff00;
+  }
+
+  .controls-btn button:hover {
+    cursor: pointer;
+    color: rgb(137, 211, 211);
+  }
+
+  .controls-btn .play-btn {
+    font-size: 30px;
+  }
+
+  .controls-btn .stop-btn {
+    font-size: 30px;
+  }
+
+  .stop-btn {
+    display: none;
+  }
+
+  .is-playing .stop-btn {
+    display: block;
+  }
+
+  .is-playing .play-btn {
+    display: none;
+  }
+
+  .shuffle-btn.is-random {
+    color: #8feaff;
+  }
+
+  .volume {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .volume-range {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 5px;
+    background-color: #ffffff87;
+    border-radius: 10px;
+    outline: none;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .volume-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    box-shadow: -400px 0 0 400px #0075ff;
+    width: 8px;
+    height: 8px;
+    background-color: #ffffff87;
+    border-radius: 50%;
+    margin-top: 0;
+  }
+
+  .timeline-progess {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 11px;
+    color: #000000;
+    margin-bottom: -8px;
   }

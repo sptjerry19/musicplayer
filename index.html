@@ -8,7 +8,7 @@
   </head>
   <body>
     <header>
-      <h1>Music App</h1>
+      <h1>Music App By Jerry</h1>
     </header>
     <div id="container">
       <main>
@@ -22,13 +22,17 @@
           <audio class="audio-music">
             <source src="" type="audio/mpeg">
           </audio>
+          <div class="timeline-progess">
+            <span class="current-time">00:00</span>
+            <span class="song-duration">00:00</span>
+          </div>
           <input type="range" min="0" max="100" value="0" step="0.5" class="timeline-range">
           
           <div class="controls-btn">
-            <button class="rotate-music">
+            <button class="rotate-music" onclick="app.rotateSong()">
               <i class="fa-solid fa-rotate-left"></i>
             </button>
-            <button class="back-btn">
+            <button class="back-btn" onclick="app.backSong()">
               <i class="fa-solid fa-backward"></i>
             </button>
             <button class="play-btn" onclick="playMusic()">
@@ -37,12 +41,16 @@
             <button class="stop-btn" onclick="pauseMusic()">
               <i class="fa-solid fa-pause"></i>
             </button>
-            <button class="next-btn">
+            <button class="next-btn" onclick="app.nextSong()">
               <i class="fa-solid fa-forward"></i>
             </button>
-            <button class="shuffle-btn">
+            <button class="shuffle-btn" onclick="app.checkRandom()">
               <i class="fa-solid fa-shuffle"></i>
             </button>
+          </div>
+          <div class="volume">
+            <i class="fa-solid fa-volume-high"></i>
+            <input type="range" min="0" max="100" value="50" step="1" class="volume-range">
           </div>
         </div>
         <!-- <button class="stop-btn">dung lai</button> -->
@@ -53,128 +61,288 @@
       </footer>
 
     <script>
-      const $ = document.querySelector.bind(document);
-      const $$ = document.querySelectorAll.bind(document);
+    const $ = document.querySelector.bind(document);
+    const $$ = document.querySelectorAll.bind(document);
 
-      const listMusics = $('#music-list');
-      const nameSong = $('.name-song');
-      const imageSong = $('.imageAudio');
-      const audioMusic = $('.audio-music');
+    const listMusics = $('#music-list');
+    const nameSong = $('.name-song');
+    const imageSong = $('.imageAudio');
+    const audioMusic = $('.audio-music');
 
-      const progress = $('.timeline-range');
+    const progress = $('.timeline-range');
+    const volumeSong = $('.volume-range');
 
-      const stopBtn = $(".stop-btn");
-      const playBtn = $(".play-btn");
-      const nextBtn = $(".next-btn");
-      const controlsBtn = $(".controls-btn");
+    const stopBtn = $(".stop-btn");
+    const playBtn = $(".play-btn");
+    const nextBtn = $(".next-btn");
+    const randomBtn = $(".shuffle-btn");
+    const controlsBtn = $(".controls-btn");
 
-      function pauseMusic() {
-        imageSong.style.animationPlayState = "paused";
-        controlsBtn.classList.remove("is-playing");
-        audioMusic.pause();
-      };
+    const songcurrent = $('.current-time');
+    const songDuration = $('.song-duration');
 
-      function playMusic() {
-        imageSong.style.animationPlayState = "running";
-        controlsBtn.classList.add("is-playing");
-        audioMusic.play();
-      }
+    volumeSong.oninput = function (e) {
+      audioMusic.volume = (e.target.value / 100);
+    };
 
-      audioMusic.ontimeupdate = function() {
-        if (audioMusic.duration) {
-          const progressPercent = audioMusic.currentTime * 100 / audioMusic.duration;
-          progress.value = progressPercent;
+    function pauseMusic() {
+      imageSong.style.animationPlayState = "paused";
+      controlsBtn.classList.remove("is-playing");
+      audioMusic.pause();
+    };
+
+    function playMusic() {
+      imageSong.style.animationPlayState = "running";
+      controlsBtn.classList.add("is-playing");
+      audioMusic.play();
+    }
+
+    audioMusic.ontimeupdate = function() {
+      if (audioMusic.duration) {
+        const progressPercent = audioMusic.currentTime * 100 / audioMusic.duration;
+        progress.value = progressPercent;
+        songcurrent.innerHTML = app.formatTime(audioMusic.currentTime);
+        if(progress.value == 100) {
+          if($(".shuffle-btn.is-random")) {
+            app.randomSong();
+          } else {
+            app.nextSong();
+          }
         }
       }
+    }
 
-      progress.onchange = function(e) {
-        const seekTime = (e.target.value / 100) * audioMusic.duration;
-        audioMusic.currentTime = seekTime;
-      }
-      
-      const app = {
-        currentIndex : 1,
-        songs: [
-          {
-            name: 'Sau Này Liệu Chúng Ta',
-            singer: 'Lofi-chill',
-            path: './audio/songs/y2mate.com - 31072  Sau Này Liệu Chúng Ta  Sợ Lắm 2 ft Hẹn Yêu  Mix Freak D Mashup Lofi Sad Cực Chill  P2.mp3',
-            image: './audio/image/106095835_p0_master1200.jpg'
-          },
-          {
-            name: 'CHẠY NGAY ĐI',
-            singer: 'Sơn Tùng MTP',
-            path: './audio/songs/y2mate.com - CHẠY NGAY ĐI ONIONN REMIX RUN NOW ONIONN REMIX  SƠN TÙNG MTP  Official Music Video.mp3',
-            image: './audio/image/5853c947842662279bac87cc4866da1c.jpg'
-          },
-          {
-            name: 'LẠC TRÔI',
-            singer: 'Sơn Tùng MTP',
-            path: './audio/songs/y2mate.com - LẠC TRÔI  OFFICIAL MUSIC VIDEO  SƠN TÙNG MTP.mp3',
-            image: './audio/image/84095572_p0_master1200.jpg'
-          },
-          {
-            name: 'NƠI NÀY CÓ ANH',
-            singer: 'Sơn Tùng MTP',
-            path: './audio/songs/y2mate.com - NƠI NÀY CÓ ANH  OFFICIAL MUSIC VIDEO  SƠN TÙNG MTP.mp3',
-            image: './audio/image/D7PnQ2AUEAAGczJ.jfif'
-          },
-          {
-            name: 'THERES NO ONE AT ALL',
-            singer: 'Sơn Tùng MTP',
-            path: './audio/songs/y2mate.com - SƠN TÙNG MTP  THERES NO ONE AT ALL ANOTHER VERSION  OFFICIAL MUSIC VIDEO.mp3',
-            image: './audio/image/dceecf2daed1ad9fbac9f3500bf2b5f6.jpg'
-          },
-        ],
+    progress.oninput = function(e) {
+      const seekTime = (e.target.value / 100) * audioMusic.duration;
+      audioMusic.currentTime = seekTime;
+    }
 
-        renderSong: function() {
-          const htmls = this.songs.map(function(song) {
-            return `
-              <li class="tab-music">
-                <div class="info-song">
+    const app = {
+      currentIndex : 0,
+      songs: [
+        {
+          name: 'Sau Này Liệu Chúng Ta',
+          singer: 'Lofi-chill',
+          path: './audio/songs/y2mate.com - 31072  Sau Này Liệu Chúng Ta  Sợ Lắm 2 ft Hẹn Yêu  Mix Freak D Mashup Lofi Sad Cực Chill  P2.mp3',
+          image: './audio/image/1bfe5747e8b346dac08cf3c7f9a1d997.jpg'
+        },
+        {
+          name: 'CHẠY NGAY ĐI',
+          singer: 'Sơn Tùng MTP',
+          path: './audio/songs/y2mate.com - CHẠY NGAY ĐI ONIONN REMIX RUN NOW ONIONN REMIX  SƠN TÙNG MTP  Official Music Video.mp3',
+          image: './audio/image/3d54c515e1b75ea0f6db44ce3ec41c86.jpg'
+        },
+        {
+          name: 'LẠC TRÔI',
+          singer: 'Sơn Tùng MTP',
+          path: './audio/songs/y2mate.com - LẠC TRÔI  OFFICIAL MUSIC VIDEO  SƠN TÙNG MTP.mp3',
+          image: './audio/image/5853c947842662279bac87cc4866da1c.jpg'
+        },
+        {
+          name: 'NƠI NÀY CÓ ANH',
+          singer: 'Sơn Tùng MTP',
+          path: './audio/songs/y2mate.com - NƠI NÀY CÓ ANH  OFFICIAL MUSIC VIDEO  SƠN TÙNG MTP.mp3',
+          image: './audio/image/76d0bb50249e6c4c5c62074f644a9291.jpg'
+        },
+        {
+          name: 'THERES NO ONE AT ALL',
+          singer: 'Sơn Tùng MTP',
+          path: './audio/songs/y2mate.com - SƠN TÙNG MTP  THERES NO ONE AT ALL ANOTHER VERSION  OFFICIAL MUSIC VIDEO.mp3',
+          image: './audio/image/95774b399cc4f9903408af58e5765d5d.jpg'
+        },
+        {
+          name: 'NGOÀI 30',
+          singer: 'Nguyễn Thái Học',
+          path: './audio/songs/y2mate.com - NGOÀI 30  THÁI HỌC x LÊ CHÍ TRUNG  OFFICIAL MV  Nửa thế giới em dành cho một ai đó thôi .mp3',
+          image: './audio/image/be9277aa5324eeed0f00a8db592f3352.jpg'
+        },
+        {
+          name: 'LÀ ANH',
+          singer: 'PHAM LICH cover',
+          path: './audio/songs/y2mate.com - LA ANH  Cover Lời Việt by PHAM LICH.mp3',
+          image: './audio/image/d2680d30e66ebed781271bd91fa3dbb1.jpg'
+        },
+        {
+          name: 'Thị Mầu',
+          singer: 'Hòa Minzy x Masew',
+          path: './audio/songs/y2mate.com - Thị Mầu  Hòa Minzy x Masew  Official Music Video.mp3',
+          image: './audio/image/e7987d3f1f05d0b58e14fae719225296.jpg'
+        },
+        {
+          name: 'EM LÀ CON THUYỀN CÔ ĐƠN',
+          singer: 'Nguyễn Thái Học',
+          path: './audio/songs/y2mate.com - EM LÀ CON THUYỀN CÔ ĐƠN  THÁI HỌC OFFICIAL MUSIC VIDEO.mp3',
+          image: './audio/image/FXwsNRmVQAABwxI.jfif'
+        },
+        {
+          name: 'EM CŨNG ĐI',
+          singer: 'Nguyễn Thái Học',
+          path: './audio/songs/y2mate.com - EM CŨNG ĐI  THÁI HỌC  OFFICIAL MUSIC VIDEO.mp3',
+          image: './audio/image/Hinh-anh-anime-girl-deo-kinh.jpg'
+        },
+      ],
+
+      renderSong: function() {
+        const htmls = this.songs.map(function(song) {
+        return `
+            <li class="tab-music">
+              <div class="info-song">
                   <img src="${song.image}" alt="">
                   <div class="description-music">
                     <h3>${song.name}</h3>
                     <p>${song.singer}</p>
-                  </div>                
-                </div>
-                <div>
+                  </div>                        
+              </div>
+              <div>
                   <i class="fa-solid fa-play" style="font-size: 30px" onclick="playSongInList()"></i>
-                </div>
-              </li>
-            `
-          });
-          listMusics.innerHTML = htmls.join('');
-        },
+              </div>
+            </li>
+          `
+        });
+        listMusics.innerHTML = htmls.join('');
+      },
 
-        currentSong: function() {
-          return this.songs[this.currentIndex];
-        },
+      currentSong: function() {
+        return this.songs[this.currentIndex];
+      },
 
-        loadCurrentMusic: function() {
-          console.log(imageSong, this.currentSong().image);
-          nameSong.innerHTML = this.currentSong().name;
-          imageSong.src = this.currentSong().image;
-          audioMusic.src = this.currentSong().path;
-        },
+      loadCurrentMusic: function() {
+        nameSong.innerHTML = this.currentSong().name;
+        imageSong.src = this.currentSong().image;
+        audioMusic.src = this.currentSong().path;
+        setTimeout(()=> {
+          songDuration.innerHTML = app.formatTime(audioMusic.duration);
+        }, 300);
+      },
 
-        start: function() {
-          imageSong.style.animationPlayState = "paused"
-          this.renderSong()
+      isActive: function() {
+        if ($('.tab-music.active')) {
+          $('.tab-music.active').classList.remove('active');
+          song.classList.add('active');
+          app.currentIndex = index;
+          app.loadCurrentMusic();
+          playMusic();
+        }
+      },
 
-          this.loadCurrentMusic()
-        },
+      formatTime: function (time) {
+        let minutes = Number.parseFloat(time/60).toFixed();
+        let seconds = Number.parseFloat(time%60).toFixed();
+        return (minutes + ':' + seconds);
+      },
 
-        nextSong: function() {
-          this.songs.forEach(song => {
-            //
-          });
-        },
-      }
+      start: function() {
+        imageSong.style.animationPlayState = "paused"
+        this.renderSong()
+        const musics = $$('.tab-music');
+        musics[this.currentIndex].classList.add('active');
+        
+        this.loadCurrentMusic()
 
-      app.start();
+        this.selectSong()
+      },
 
+      nextSong: function() {
+        imageSong.style.transform = 'rotate(0deg)';
+        this.currentIndex++;
+        if (this.currentIndex >= this.songs.length) {
+          this.currentIndex = 0;
+        }
+        const musics = $$('.tab-music');
+        $('.tab-music.active').classList.remove('active');
+        musics[this.currentIndex].classList.add('active');
+        this.scrollToActiveSong()
+        this.loadCurrentMusic();
+        playMusic();
+      },
+
+      backSong: function() {
+        imageSong.style.transform = 'rotate(0deg)';
+        this.currentIndex--;
+        if (this.currentIndex < 0) {
+            this.currentIndex = this.songs.length-1;
+        }
+        const musics = $$('.tab-music');
+        $('.tab-music.active').classList.remove('active');
+        musics[this.currentIndex].classList.add('active');
+        this.scrollToActiveSong()
+        this.loadCurrentMusic();
+        playMusic();
+      },
+
+      checkRandom: function() {
+        if ($('.shuffle-btn.is-random')) {
+          randomBtn.classList.remove('is-random');
+        } else {
+          randomBtn.classList.add('is-random');
+          this.randomSong();
+        }
+      },
+
+      randomSong: function () {
+        let randomIndex = Math.floor(Math.random() * this.songs.length)
+        this.currentIndex = randomIndex;
+        const musics = $$('.tab-music');
+        $('.tab-music.active').classList.remove('active');
+        musics[this.currentIndex].classList.add('active');
+        this.scrollToActiveSong()
+        this.loadCurrentMusic();
+        playMusic();
+      },
+
+      rotateSong: function () {
+        audioMusic.currentTime = 0;
+        audioMusic.ontimeupdate = function () {
+          if (audioMusic.duration) {
+            const progressPercent = audioMusic.currentTime * 100 / audioMusic.duration;
+            progress.value = progressPercent;
+          }
+        };
+        this.loadCurrentMusic();
+        playMusic();
+      },
+      
+      selectSong: function () {
+        const songInList = $$('.tab-music')
+        songInList.forEach((song, index) => {
+          song.onclick = function () {
+            $('.tab-music.active').classList.remove('active');
+            song.classList.add('active');
+            app.currentIndex = index;
+            app.loadCurrentMusic();
+            playMusic();
+          }
+        });
+      },
+
+      scrollToActiveSong: function () {
+        // elemenmt được active sẽ được hiển thị trong vùng nhìn thấy
+        $('.tab-music.active').scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'nearest'
+        });
+      },
+    }
+
+    app.start();
+      
     </script>
-    <source src="./audio/image/dceecf2daed1ad9fbac9f3500bf2b5f6.jpg">
+    <!-- <script src="app.js"></script> -->
+    <source src="./audio/songs/y2mate.com - EM CŨNG ĐI  THÁI HỌC  OFFICIAL MUSIC VIDEO.mp3">
+    <source src="./audio/songs/y2mate.com - EM LÀ CON THUYỀN CÔ ĐƠN  THÁI HỌC OFFICIAL MUSIC VIDEO.mp3">
+    <source src="./audio/songs/y2mate.com - Thị Mầu  Hòa Minzy x Masew  Official Music Video.mp3">
+    <source src="./audio/songs/y2mate.com - LA ANH  Cover Lời Việt by PHAM LICH.mp3">
+    <source src="./audio/songs/y2mate.com - NGOÀI 30  THÁI HỌC x LÊ CHÍ TRUNG  OFFICIAL MV  Nửa thế giới em dành cho một ai đó thôi .mp3">
+    <source src="./audio/image/be9277aa5324eeed0f00a8db592f3352.jpg">
+    <source src="./audio/image/d2680d30e66ebed781271bd91fa3dbb1.jpg">
+    <source src="./audio/image/e7987d3f1f05d0b58e14fae719225296.jpg">
+    <source src="./audio/image/FXwsNRmVQAABwxI.jfif">
+    <source src="./audio/image/Hinh-anh-anime-girl-deo-kinh.jpg">
+    <source src="./audio/image/wallpaperflare.com_wallpaper (2).jpg">
+    <source src="./audio/image/wallpaperflare.com_wallpaper (3).jpg">
+    <source src="./audio/image/1028709.jpg">
+    <source src="./audio/image/1028801.jpg">
+    <source src="./audio/image/1198620.jpg">
   </body>
 </html>
