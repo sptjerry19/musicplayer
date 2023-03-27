@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="app.js"></script>
     <script src="https://kit.fontawesome.com/48b47b215e.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
   </head>
   <body>
     <header>
@@ -15,6 +16,9 @@
       <div class="list-background">
     
       </div>
+    </div>
+    <div class="add-song">
+      <i class="fa-solid fa-eject"> <p>add song</p> </i>
     </div>
     <div id="container">
       <main>
@@ -60,11 +64,39 @@
           </div>
         </div>
         <!-- <button class="stop-btn">dung lai</button> -->
-      </main>
+      </main>    
     </div>
-      <footer>
-        <p>Copyright © 2023 Music App</p>
-      </footer>
+    <div id="add-music">
+      <form id="form-addMusic">
+        <div class="form-group">
+            <label for="nameSong">Name Song:</label>
+            <input type="text" id="nameSong" name="nameSong" required>
+            <span class="form-message"></span>
+        </div>
+        <div class="form-group">
+            <label for="singer">Singer:</label>
+            <input type="text" id="singer" name="singer" required>
+            <span class="form-message"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="srcMusic">Chose a file Song:</label>
+            <input type="file" id="srcMusic" name="srcMusic" onchange="chooseFile(this)" required accept="image/png">
+            <span class="form-message"></span>
+        </div>
+      
+        <div class="form-group">
+            <label for="srcImage">Chose a file Image:</label>
+            <input type="file" id="srcImage" name="srcImage" onchange="chooseFile(this)" required accept="image/png">
+            <span class="form-message"></span>
+        </div>
+      
+        <button type="submit" class="submit-addmusic" onclick="addSong()">Submit</button>
+      </form>
+    </div>
+    <footer>
+      <p>Copyright © 2023 Music App</p>
+    </footer>
     <script src="app.js"></script>
   </body>
 </html>

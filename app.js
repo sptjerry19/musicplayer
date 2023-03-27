@@ -23,6 +23,40 @@ var change_bgBtn = $('.change-bgBtn');
 var list_bg = $('.list-background');
 var change_background = $('.change-background');
 
+var add_Song = $('.add-song');
+var add_Music = $('#add-music');
+var form_AddMusic = $('#form-addMusic')
+var close_MusicBtn = $('.close-music-btn');
+var form_NameSong = $('#nameSong');
+var form_Singer = $('#singer');
+var form_SrcMusic = $('#srcMusic');
+var form_SrcImage = $('#srcImage');
+
+form_NameSong.onchange = function (e) {
+  return e.target.value;
+}
+console.log(form_NameSong.value);
+
+form_Singer.onchange = function (e) {
+  return e.target.value;
+}
+
+function chooseFile(fileInput)  {
+  if (fileInput.files && fileInput.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      form_SrcImage.attr('src', e.target.result);
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+  }
+}
+
+form_SrcImage.onchange = function (e) {
+  const files = e.target.files;
+  const file = files[0].name;
+  return file;
+}
+
 change_bgBtn.addEventListener('click', function() {
     if ($('.list-background.is-open') && $('.change-background.is-open')) {
         list_bg.classList.remove('is-open');
@@ -40,6 +74,19 @@ change_bgBtn.addEventListener('click', function() {
         };
     });
 });
+
+add_Song.onclick = function () {
+  form_AddMusic.classList.add('is-adding');
+  add_Music.classList.add('is-adding');
+}
+
+form_AddMusic.onclick = function(event) {
+  event.stopPropagation();
+}
+
+add_Music.onclick = function () {
+  add_Music.classList.remove('is-adding');
+}
 
 volumeSong.oninput = function (e) {
   audioMusic.volume = (e.target.value / 100);
